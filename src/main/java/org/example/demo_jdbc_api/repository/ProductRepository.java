@@ -29,11 +29,17 @@ public class ProductRepository {
         this.fetchProductSql = read("fetch_product.sql");
     }
 
-    //метод для извлечения имени продукта из базы данных на основе переданного имени.
-    public String getProductName(String name){
-        Map<String,Object> params = new HashMap<>();
-        params.put("name",name);
-        return jdbcTemplate.queryForObject(fetchProductSql,params,String.class);//Метод queryForObject выполняет SQL запрос, который хранится в строке fetchProductSql
+//метод для извлечения имени продукта из базы данных на основе переданного имени.
+    public String getProductName(String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        try {
+            return jdbcTemplate.queryForObject(fetchProductSql, params, String.class);
+        } catch (DataAccessException e) {
+            // Логирование ошибки
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при выполнении запроса к базе данных", e);
+        }
     }
 
     //используется для чтения содержимого файла с SQL запросом и возвращения его в виде строки
